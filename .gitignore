@@ -7,7 +7,7 @@
 
 .idea
 .env
-/state
+dist
 
 # testing
 /coverage

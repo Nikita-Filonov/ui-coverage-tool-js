@@ -45,8 +45,8 @@ export class UICoverageBuilder {
     }
 
     const elements: ElementCoverage[] = [];
-    for (const [selectorGroupKey, results] of this.resultsList.groupedBySelector.entries()) {
-      const [selector, selectorType] = unpackSelectorGroupKey(selectorGroupKey);
+    for (const [groupKey, results] of this.resultsList.groupedBySelector.entries()) {
+      const [selector, selectorType] = unpackSelectorGroupKey(groupKey);
       elements.push(this.buildElementCoverage({ results, selector, selectorType }));
     }
 

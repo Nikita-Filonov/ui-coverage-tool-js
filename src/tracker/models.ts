@@ -27,7 +27,7 @@ export class CoverageResultList {
   }
 
   get groupedBySelector(): Map<SelectorGroupKey, CoverageResultList> {
-    return this.groupBy(r => buildSelectorGroupKey(r));
+    return this.groupBy(buildSelectorGroupKey);
   }
 
   get totalActions(): number {
@@ -52,8 +52,8 @@ export class CoverageResultList {
     }
 
     const resultMap = new Map<K, CoverageResultList>();
-    for (const [key, group] of map.entries()) {
-      resultMap.set(key, new CoverageResultList({ results: group }));
+    for (const [key, results] of map.entries()) {
+      resultMap.set(key, new CoverageResultList({ results }));
     }
 
     return resultMap;

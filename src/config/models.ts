@@ -1,7 +1,9 @@
+import { AppKey, AppName } from '../tools/types';
+
 export type AppConfig = {
-  key: string;
+  key: AppKey;
   url: string;
-  name: string;
+  name: AppName;
   tags?: string[];
   repository?: string;
 };

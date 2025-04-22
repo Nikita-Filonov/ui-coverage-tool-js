@@ -17,7 +17,7 @@ export class UIReportsStorage {
   private async injectStateIntoHtml(state: CoverageReportState): Promise<string> {
     const stateJson = JSON.stringify(state);
     const templateFile = this.settings.htmlReportTemplateFile;
-    
+
     if (!templateFile || !(await isPathExists(templateFile))) {
       logger.error('Template HTML report file not found.');
       return '';

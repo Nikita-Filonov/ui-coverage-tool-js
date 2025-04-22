@@ -7,7 +7,7 @@ const program = new Command();
 program
   .name('ui-coverage-tool')
   .description('UI Coverage CLI Tool')
-  .version('0.23.0');
+  .version('0.25.0');
 
 program
   .command('save-report')

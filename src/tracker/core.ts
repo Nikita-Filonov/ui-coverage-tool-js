@@ -4,6 +4,10 @@ import { SelectorType } from '../tools/selector';
 import { Settings } from '../config/models';
 import { getSettings } from '../config/core';
 
+type UICoverageTrackerProps = {
+  app: string
+  settings?: Settings
+}
 
 type TrackCoverageProps = {
   selector: string,
@@ -16,14 +20,13 @@ export class UICoverageTracker {
   private storage: UICoverageTrackerStorage;
   private settings: Settings;
 
-  constructor(app: string, settings?: Settings) {
+  constructor({ app, settings }: UICoverageTrackerProps) {
     this.app = app;
     this.settings = settings || getSettings();
-    console.log(this.settings);
-    this.storage = new UICoverageTrackerStorage(this.settings);
+    this.storage = new UICoverageTrackerStorage({ settings: this.settings });
   }
 
-  trackCoverage({ selector, actionType, selectorType }: TrackCoverageProps): void {
-    this.storage.save({ app: this.app, selector, actionType, selectorType });
+  async trackCoverage({ selector, actionType, selectorType }: TrackCoverageProps): Promise<void> {
+    await this.storage.save({ app: this.app, selector, actionType, selectorType });
   }
 }

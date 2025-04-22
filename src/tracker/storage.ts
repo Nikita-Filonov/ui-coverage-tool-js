@@ -1,37 +1,38 @@
-import fs from 'fs';
+import fs from 'fs/promises';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { getLogger } from '../tools/logger';
-import { CoverageResultList, Models } from './models';
+import { CoverageResult, CoverageResultList } from './models';
 import { Settings } from '../config/models';
+import { isPathExists } from '../tools/files';
 
 const logger = getLogger('UI_COVERAGE_TRACKER_STORAGE');
 
 export class UICoverageTrackerStorage {
   private settings: Settings;
 
-  constructor(settings: Settings) {
+  constructor({ settings }: { settings: Settings }) {
     this.settings = settings;
   }
 
-  load(): CoverageResultList {
+  async load(): Promise<CoverageResultList> {
     const resultsDir = this.settings.resultsDir;
 
     logger.info(`Loading coverage results from directory: ${resultsDir}`);
 
-    if (!fs.existsSync(resultsDir)) {
+    if (!(await isPathExists(resultsDir))) {
       logger.warning(`Results directory does not exist: ${resultsDir}`);
-      return new CoverageResultList([]);
+      return new CoverageResultList({ results: [] });
     }
 
-    const results: Models[] = [];
-
-    for (const fileName of fs.readdirSync(resultsDir)) {
+    const results: CoverageResult[] = [];
+    for (const fileName of await fs.readdir(resultsDir)) {
       const file = path.join(resultsDir, fileName);
+      const fileStats = await fs.stat(file);
 
-      if (fs.statSync(file).isFile() && fileName.endsWith('.json')) {
+      if (fileStats.isFile() && fileName.endsWith('.json')) {
         try {
-          const json = fs.readFileSync(file, 'utf-8');
+          const json = await fs.readFile(file, 'utf-8');
           results.push(JSON.parse(json));
         } catch (error) {
           logger.warning(`Failed to parse file ${fileName}: ${error}`);
@@ -40,21 +41,21 @@ export class UICoverageTrackerStorage {
     }
 
     logger.info(`Loaded ${results.length} coverage files from directory: ${resultsDir}`);
-    return new CoverageResultList(results);
+    return new CoverageResultList({ results });
   }
 
-  save(coverage: Models) {
+  async save(coverage: CoverageResult) {
     const resultsDir = this.settings.resultsDir;
 
-    if (!fs.existsSync(resultsDir)) {
+    if (!(await isPathExists(resultsDir))) {
       logger.info(`Results directory does not exist, creating: ${resultsDir}`);
-      fs.mkdirSync(resultsDir, { recursive: true });
+      await fs.mkdir(resultsDir, { recursive: true });
     }
 
     const file = path.join(resultsDir, `${uuidv4()}.json`);
 
     try {
-      fs.writeFileSync(file, JSON.stringify(coverage), 'utf-8');
+      await fs.writeFile(file, JSON.stringify(coverage), 'utf-8');
     } catch (error) {
       logger.error(`Error saving coverage data to file ${file}: ${error}`);
     }

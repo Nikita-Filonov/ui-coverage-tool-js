@@ -5,6 +5,7 @@ import { ActionCoverage, AppCoverage, ElementCoverage } from './models';
 import { CoverageResultList } from '../tracker/models';
 import { UICoverageHistoryBuilder } from '../history/builder';
 import { ActionHistory } from '../history/models';
+import { unpackSelectorGroupKey } from '../tracker/selector';
 
 type UICoverageBuilderProps = {
   resultsList: CoverageResultList
@@ -44,7 +45,8 @@ export class UICoverageBuilder {
     }
 
     const elements: ElementCoverage[] = [];
-    for (const [[selector, selectorType], results] of this.resultsList.groupedBySelector.entries()) {
+    for (const [selectorGroupKey, results] of this.resultsList.groupedBySelector.entries()) {
+      const [selector, selectorType] = unpackSelectorGroupKey(selectorGroupKey);
       elements.push(this.buildElementCoverage({ results, selector, selectorType }));
     }
 

@@ -1,6 +1,6 @@
 {
   "name": "ui-coverage-tool-js",
-  "version": "0.16.0",
+  "version": "0.20.0",
   "type": "module",
   "files": [
     "dist",
@@ -11,9 +11,9 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
-      "require": "./dist/index.cjs",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.cjs"
     },
     "./cli": {
       "import": "./dist/cli.js"
@@ -25,17 +25,14 @@
   "scripts": {
     "build": "tsup",
     "report:copy": "node scripts/copy-report.js",
-    "report:deploy": "node scripts/deploy-report.js",
-    "postbuild": "node scripts/add-shebang.mjs"
+    "report:deploy": "node scripts/deploy-report.js"
   },
   "license": "MIT",
   "dependencies": {
     "@types/node": "^22.14.1",
-    "chalk": "^5.4.1",
     "commander": "^13.1.0",
     "dotenv": "^16.5.0",
     "js-yaml": "^4.1.0",
-    "ts-node": "^10.9.2",
     "typescript": "^5.8.3",
     "uuid": "^11.1.0"
   },

@@ -1,10 +1,9 @@
 import { ActionType } from '../tools/actions';
 import { SelectorType } from '../tools/selector';
 import { AppKey, Selector } from '../tools/types';
+import { buildSelectorGroupKey, SelectorGroupKey } from './selector';
 
-type SelectorGroupKey = [Selector, SelectorType]
-
-export interface Models {
+export interface CoverageResult {
   app: AppKey;
   selector: Selector;
   actionType: ActionType;
@@ -12,15 +11,15 @@ export interface Models {
 }
 
 export class CoverageResultList {
-  private readonly results: Models[];
+  private readonly results: CoverageResult[];
 
-  constructor(results: Models[]) {
+  constructor({ results }: { results: CoverageResult[] }) {
     this.results = results;
   }
 
   filter({ app }: { app?: AppKey }): CoverageResultList {
     const filtered = this.results.filter(r => !app || r.app.toLowerCase() === app.toLowerCase());
-    return new CoverageResultList(filtered);
+    return new CoverageResultList({ results: filtered });
   }
 
   get groupedByAction(): Map<ActionType, CoverageResultList> {
@@ -28,7 +27,7 @@ export class CoverageResultList {
   }
 
   get groupedBySelector(): Map<SelectorGroupKey, CoverageResultList> {
-    return this.groupBy(r => [r.selector, r.selectorType]);
+    return this.groupBy(r => buildSelectorGroupKey(r));
   }
 
   get totalActions(): number {
@@ -43,18 +42,18 @@ export class CoverageResultList {
     return this.results.filter(r => r.actionType === actionType).length;
   }
 
-  private groupBy<K>(keyGetter: (r: Models) => K): Map<K, CoverageResultList> {
-    const map = new Map<K, Models[]>();
+  private groupBy<K>(keyGetter: (r: CoverageResult) => K): Map<K, CoverageResultList> {
+    const map = new Map<K, CoverageResult[]>();
     for (const result of this.results) {
       const key = keyGetter(result);
-      const group = map.get(key) || [];
-      group.push(result);
-      map.set(key, group);
+      const results = map.get(key) || [];
+      results.push(result);
+      map.set(key, results);
     }
 
     const resultMap = new Map<K, CoverageResultList>();
     for (const [key, group] of map.entries()) {
-      resultMap.set(key, new CoverageResultList(group));
+      resultMap.set(key, new CoverageResultList({ results: group }));
     }
 
     return resultMap;

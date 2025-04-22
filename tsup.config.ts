@@ -5,6 +5,7 @@ export default defineConfig({
     index: 'src/index.ts',
     cli: 'src/cli.ts'
   },
+  banner: { js: '#!/usr/bin/env node' },
   format: ['esm', 'cjs'],
   dts: true,
   sourcemap: true,

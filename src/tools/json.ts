@@ -1,3 +1,7 @@
+import { getLogger } from './logger';
+
+const logger = getLogger('JSON');
+
 type LoadJsonProps<T> = {
   content: string
   fallback: T
@@ -5,9 +9,16 @@ type LoadJsonProps<T> = {
 
 export const loadJson = <T>({ content, fallback }: LoadJsonProps<T>): T => {
   try {
-    return JSON.parse(content);
+    return JSON.parse(content, (key, value) => {
+      switch (key) {
+        case 'createdAt':
+          return new Date(value);
+        default:
+          return value;
+      }
+    });
   } catch (error) {
-    console.warn('Failed to parse JSON:', error);
+    logger.warning(`Failed to parse JSON: ${error}`);
     return fallback;
   }
 };

@@ -1,25 +1,29 @@
-import fs from 'fs';
+import fs from 'fs/promises';
 import path from 'path';
 import { CoverageReportState } from './models';
 import { getLogger } from '../tools/logger';
 import { Settings } from '../config/models';
+import { isPathExists } from '../tools/files';
 
 const logger = getLogger('UI_REPORTS_STORAGE');
 
 export class UIReportsStorage {
-  constructor(private settings: Settings) {
+  private settings: Settings;
+
+  constructor({ settings }: { settings: Settings }) {
+    this.settings = settings;
   }
 
-  private injectStateIntoHtml(state: CoverageReportState): string {
+  private async injectStateIntoHtml(state: CoverageReportState): Promise<string> {
     const stateJson = JSON.stringify(state);
     const templateFile = this.settings.htmlReportTemplateFile;
-
-    if (!templateFile || !fs.existsSync(templateFile)) {
+    
+    if (!templateFile || !(await isPathExists(templateFile))) {
       logger.error('Template HTML report file not found.');
       return '';
     }
 
-    const html = fs.readFileSync(templateFile, 'utf-8');
+    const html = await fs.readFile(templateFile, 'utf-8');
 
     const scriptRegex = /<script id="state" type="application\/json">[\s\S]*?<\/script>/gi;
     const scriptTag = `<script id="state" type="application/json">${stateJson}</script>`;
@@ -27,7 +31,7 @@ export class UIReportsStorage {
     return html.replace(scriptRegex, scriptTag);
   }
 
-  saveJsonReport(state: CoverageReportState): void {
+  async saveJsonReport(state: CoverageReportState): Promise<void> {
     const file = this.settings.jsonReportFile;
 
     if (!file) {
@@ -36,15 +40,15 @@ export class UIReportsStorage {
     }
 
     try {
-      fs.mkdirSync(path.dirname(file), { recursive: true });
-      fs.writeFileSync(file, JSON.stringify(state, null, 2));
+      await fs.mkdir(path.dirname(file), { recursive: true });
+      await fs.writeFile(file, JSON.stringify(state, null, 2));
       logger.info(`JSON report saved to ${file}`);
     } catch (error) {
       logger.error(`Failed to write JSON report: ${error}`);
     }
   }
 
-  saveHtmlReport(state: CoverageReportState): void {
+  async saveHtmlReport(state: CoverageReportState): Promise<void> {
     const file = this.settings.htmlReportFile;
 
     if (!file) {
@@ -53,9 +57,9 @@ export class UIReportsStorage {
     }
 
     try {
-      const content = this.injectStateIntoHtml(state);
-      fs.mkdirSync(path.dirname(file), { recursive: true });
-      fs.writeFileSync(file, content, 'utf-8');
+      const content = await this.injectStateIntoHtml(state);
+      await fs.mkdir(path.dirname(file), { recursive: true });
+      await fs.writeFile(file, content, 'utf-8');
       logger.info(`HTML report saved to ${file}`);
     } catch (error) {
       logger.error(`Failed to write HTML report: ${error}`);

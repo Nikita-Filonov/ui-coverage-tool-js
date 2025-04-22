@@ -10,22 +10,22 @@ import { getDefaultAppHistoryState } from '../history/default';
 
 const logger = getLogger('SAVE_REPORT');
 
-export const saveReport = () => {
+export const saveReport = async () => {
   logger.info('Starting to save the report');
 
   const settings = getSettings();
 
-  const reportsStorage = new UIReportsStorage(settings);
-  const trackerStorage = new UICoverageTrackerStorage(settings);
-  const historyStorage = new UICoverageHistoryStorage(settings);
+  const reportsStorage = new UIReportsStorage({ settings });
+  const trackerStorage = new UICoverageTrackerStorage({ settings });
+  const historyStorage = new UICoverageHistoryStorage({ settings });
 
   const reportState: CoverageReportState = {
     config: { apps: settings.apps },
     createdAt: new Date(),
     appsCoverage: {}
   };
-  const historyState = historyStorage.load();
-  const trackerState = trackerStorage.load();
+  const historyState = await historyStorage.load();
+  const trackerState = await trackerStorage.load();
   for (const app of settings.apps) {
     const resultsList = trackerState.filter({ app: app.key });
 
@@ -35,9 +35,9 @@ export const saveReport = () => {
     reportState.appsCoverage[app.key] = coverageBuilder.build();
   }
 
-  historyStorage.saveFromReport(reportState);
-  reportsStorage.saveJsonReport(reportState);
-  reportsStorage.saveHtmlReport(reportState);
+  await historyStorage.saveFromReport(reportState);
+  await reportsStorage.saveJsonReport(reportState);
+  await reportsStorage.saveHtmlReport(reportState);
 
   logger.info('Report saving process completed');
 };

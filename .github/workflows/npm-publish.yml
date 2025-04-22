@@ -20,14 +20,14 @@ jobs:
           registry-url: 'https://registry.npmjs.org/'
 
       - name: 📦 Install dependencies
-        run: npm ci
+        run: yarn install --frozen-lockfile
 
       - name: 🛠 Build project
         run: |
-          npm run build
-          npm run report:deploy
+          yarn build
+          yarn report:deploy
 
       - name: 🚀 Publish to NPM
-        run: npm publish --access public
+        run: yarn publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

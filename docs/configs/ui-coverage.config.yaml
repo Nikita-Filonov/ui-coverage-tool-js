@@ -1,0 +1,18 @@
+# List of application configurations.
+apps:
+  - key: "my-ui-app"  # Unique identifier for the app.
+    url: "https://my-ui-app.com/login"  # Entry point URL of the app.
+    name: "My UI App"  # Name of the app.
+    tags: [ "UI", "PRODUCTION" ]  # Optional list of tags to describe the application.
+    repository: "https://github.com/my-ui-app"  # Optional URL to the repository of the application.
+
+# Directory where coverage results will be stored.
+resultsDir: "./coverage-results"  # This path is relative to the current working directory.
+
+# File where the history of coverage results is saved.
+historyFile: "./coverage-history.json"  # This path is relative to the current working directory.
+historyRetentionLimit: 30  # The maximum number of history records to keep.
+
+# File paths for reports. These are optional, and if not set, reports will not be generated.
+htmlReportFile: "./index.html"  # Path to the HTML report file.
+jsonReportFile: "./coverage-report.json"  # Path to the JSON report file.

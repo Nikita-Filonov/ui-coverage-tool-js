@@ -30,13 +30,11 @@ export const buildJsonSettings = () => {
 
 export const buildYamlSettings = () => {
   return cleanUndefined(
-    loadFromYaml<Partial<Settings>>(path.join(cwd, 'ui-coverage.config.yaml'))
+    loadFromYaml<Settings>(path.join(cwd, 'ui-coverage.config.yaml'))
   );
 };
 
 export const buildDefaultSettings = (): Settings => {
-  const cwd = process.cwd();
-
   let htmlReportTemplateFile: string;
   try {
     htmlReportTemplateFile = path.join(path.dirname(url.fileURLToPath(import.meta.url)), 'reports/templates/index.html');

@@ -1,0 +1,19 @@
+{
+  "services": [
+    {
+      "key": "my-ui-app",
+      "url": "https://my-ui-app.com/login",
+      "name": "My UI App",
+      "tags": [
+        "UI",
+        "PRODUCTION"
+      ],
+      "repository": "https://github.com/my-ui-app"
+    }
+  ],
+  "resultsDir": "./coverage-results",
+  "historyFile": "./coverage-history.json",
+  "historyRetentionLimit": 30,
+  "htmlReportFile": "./index.html",
+  "jsonReportFile": "./coverage-report.json"
+}

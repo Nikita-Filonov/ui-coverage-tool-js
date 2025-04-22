@@ -27,7 +27,6 @@
     "report:copy": "node scripts/copy-report.js",
     "report:deploy": "node scripts/deploy-report.js"
   },
-  "license": "MIT",
   "dependencies": {
     "@types/node": "^22.14.1",
     "commander": "^13.1.0",
@@ -46,5 +45,24 @@
     "eslint-plugin-react": "^7.37.4",
     "prettier": "^3.4.2",
     "tsup": "^8.4.0"
+  },
+  "bugs": {
+    "url": "https://github.com/Nikita-Filonov/ui-coverage-tool-js/issues"
+  },
+  "author": "Nikita Filonov filonov.nikitkaa@gmail.com (https://github.com/Nikita-Filonov)",
+  "license": "MIT",
+  "keywords": [
+    "ui",
+    "e2e",
+    "testing",
+    "coverage",
+    "selenium",
+    "playwright",
+    "visualization"
+  ],
+  "homepage": "https://github.com/Nikita-Filonov/ui-coverage-tool-js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nikita-Filonov/ui-coverage-tool-js.git"
   }
 }

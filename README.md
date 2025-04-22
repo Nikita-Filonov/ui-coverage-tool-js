@@ -105,8 +105,9 @@ That’s it. No other setup required. Without this script, the coverage report w
 
 ## Usage
 
-Below are examples of how to use the tool with two popular UI automation frameworks: `Playwright` and `Selenium`. In
-both cases, coverage data is automatically saved to the `./coverage-results` folder after each call to `track_coverage`.
+Below are examples of how to use the tool with two popular UI automation
+frameworks: `Playwright`, `Puppeteer`, `Selenium`. In both cases, coverage data is automatically saved to
+the `./coverage-results` folder after each call to `await tracker.trackCoverage(...)`.
 
 ### Playwright
 
@@ -155,7 +156,7 @@ const tracker = new UICoverageTracker({ app: 'my-ui-app' });
 
 Quick summary:
 
-- Call `await tracker.trackCoverage()` after each user interaction.
+- Call `await tracker.trackCoverage(...)` after each user interaction.
 - Provide the selector, action type, and selector type.
 - The tool automatically stores tracking data as JSON files.
 

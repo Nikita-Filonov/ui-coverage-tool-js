@@ -34,6 +34,7 @@ you see exactly what was tested and how.
 - [Usage](#usage)
     - [Playwright](#playwright)
     - [Selenium](#selenium)
+    - [Puppeteer](#puppeteer)
     - [Coverage Report Generation](#coverage-report-generation)
 - [Configuration](#configuration)
     - [.env](#configuration-via-env)

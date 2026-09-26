@@ -2,32 +2,35 @@ name: Publish to NPM
 
 on:
   push:
-    tags:
-      - 'v*'
+    tags: ['v*']
+
+permissions:
+  contents: read
 
 jobs:
+  lint:
+    uses: ./.github/workflows/reusable-lint.yml
+
+  test:
+    uses: ./.github/workflows/reusable-test.yml
+    needs: lint
+
+  build:
+    uses: ./.github/workflows/reusable-build.yml
+    needs: lint
+
   publish:
+    needs: [test, build]
     runs-on: ubuntu-latest
-
     steps:
-      - name: 📥 Checkout code
-        uses: actions/checkout@v4
-
-      - name: 🔧 Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
-          node-version: 20
+          node-version: '24'
           registry-url: 'https://registry.npmjs.org/'
-
-      - name: 📦 Install dependencies
-        run: yarn install --frozen-lockfile
-
-      - name: 🛠 Build project
-        run: |
-          yarn build
-          yarn report:deploy
-
-      - name: 🚀 Publish to NPM
-        run: yarn publish --access public
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npm publish --access public --ignore-scripts
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

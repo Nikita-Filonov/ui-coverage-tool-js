@@ -8,15 +8,15 @@ import { ActionHistory } from '../history/models';
 import { unpackSelectorGroupKey } from '../tracker/selector';
 
 type UICoverageBuilderProps = {
-  resultsList: CoverageResultList
-  historyBuilder: UICoverageHistoryBuilder
-}
+  resultsList: CoverageResultList;
+  historyBuilder: UICoverageHistoryBuilder;
+};
 
 type BuildElementCoverageProps = {
-  results: CoverageResultList
-  selector: Selector
-  selectorType: SelectorType
-}
+  results: CoverageResultList;
+  selector: Selector;
+  selectorType: SelectorType;
+};
 
 export class UICoverageBuilder {
   private resultsList: CoverageResultList;

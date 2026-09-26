@@ -11,4 +11,3 @@ export interface CoverageReportState {
   createdAt: Date;
   appsCoverage: Record<AppKey, AppCoverage>;
 }
-

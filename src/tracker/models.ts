@@ -10,6 +10,17 @@ export interface CoverageResult {
   selectorType: SelectorType;
 }
 
+export const isCoverageResult = (value: unknown): value is CoverageResult => {
+  if (typeof value !== 'object' || value === null) return false;
+  const result = value as Record<string, unknown>;
+  return (
+    typeof result.app === 'string' &&
+    typeof result.selector === 'string' &&
+    Object.values(ActionType).includes(result.actionType as ActionType) &&
+    Object.values(SelectorType).includes(result.selectorType as SelectorType)
+  );
+};
+
 export class CoverageResultList {
   private readonly results: CoverageResult[];
 
@@ -18,12 +29,12 @@ export class CoverageResultList {
   }
 
   filter({ app }: { app?: AppKey }): CoverageResultList {
-    const filtered = this.results.filter(r => !app || r.app.toLowerCase() === app.toLowerCase());
+    const filtered = this.results.filter((r) => !app || r.app.toLowerCase() === app.toLowerCase());
     return new CoverageResultList({ results: filtered });
   }
 
   get groupedByAction(): Map<ActionType, CoverageResultList> {
-    return this.groupBy(r => r.actionType);
+    return this.groupBy((r) => r.actionType);
   }
 
   get groupedBySelector(): Map<SelectorGroupKey, CoverageResultList> {
@@ -39,7 +50,7 @@ export class CoverageResultList {
   }
 
   countAction(actionType: ActionType): number {
-    return this.results.filter(r => r.actionType === actionType).length;
+    return this.results.filter((r) => r.actionType === actionType).length;
   }
 
   private groupBy<K>(keyGetter: (r: CoverageResult) => K): Map<K, CoverageResultList> {

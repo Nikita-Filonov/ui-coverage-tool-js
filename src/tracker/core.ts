@@ -5,15 +5,15 @@ import { Settings } from '../config/models';
 import { getSettings } from '../config/core';
 
 type UICoverageTrackerProps = {
-  app: string
-  settings?: Settings
-}
+  app: string;
+  settings?: Settings;
+};
 
 type TrackCoverageProps = {
-  selector: string,
-  actionType: ActionType,
-  selectorType: SelectorType
-}
+  selector: string;
+  actionType: ActionType;
+  selectorType: SelectorType;
+};
 
 export class UICoverageTracker {
   private app: string;

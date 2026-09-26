@@ -1,9 +1,10 @@
 import fs from 'fs';
-import yaml from 'js-yaml';
+import { load, CORE_SCHEMA, mergeTag, timestampTag, binaryTag, omapTag, pairsTag, setTag } from 'js-yaml';
 import fsAsync from 'fs/promises';
 import { getLogger } from './logger';
 
 const logger = getLogger('FILES');
+const configSchema = CORE_SCHEMA.withTags(mergeTag, timestampTag, binaryTag, omapTag, pairsTag, setTag);
 
 export const isPathExists = async (path: string): Promise<boolean> => {
   try {
@@ -29,12 +30,11 @@ export const loadFromJson = <T>(file: string): Partial<T> => {
 export const loadFromYaml = <T>(file: string): Partial<T> => {
   try {
     if (!fs.existsSync(file)) return {};
-    
+
     const raw = fs.readFileSync(file, 'utf-8');
-    return yaml.load(raw) as Partial<T>;
+    return (load(raw, { schema: configSchema }) || {}) as Partial<T>;
   } catch (error) {
     logger.warning(`Failed to load YAML config ${file}: ${error}`);
     return {};
   }
 };
-

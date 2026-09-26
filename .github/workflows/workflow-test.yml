@@ -1,0 +1,36 @@
+name: 🧪 Test
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: 🧹 lint
+    uses: ./.github/workflows/reusable-lint.yml
+
+  test:
+    name: 🧪 test
+    uses: ./.github/workflows/reusable-test.yml
+    needs: lint
+    strategy:
+      matrix:
+        node-version: ['22', '24']
+    with:
+      node-version: ${{ matrix.node-version }}
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+  build:
+    name: 📦 build
+    uses: ./.github/workflows/reusable-build.yml
+    needs: lint
+    strategy:
+      matrix:
+        node-version: ['22', '24']
+    with:
+      node-version: ${{ matrix.node-version }}

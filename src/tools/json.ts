@@ -3,9 +3,9 @@ import { getLogger } from './logger';
 const logger = getLogger('JSON');
 
 type LoadJsonProps<T> = {
-  content: string
-  fallback: T
-}
+  content: string;
+  fallback: T;
+};
 
 export const loadJson = <T>({ content, fallback }: LoadJsonProps<T>): T => {
   try {

@@ -1,4 +1,4 @@
 export enum SelectorType {
-    CSS = 'CSS',
-    XPath = 'XPATH'
+  CSS = 'CSS',
+  XPath = 'XPATH'
 }

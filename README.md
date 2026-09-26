@@ -1,5 +1,10 @@
 # UI Coverage Tool
 
+[![Test](https://github.com/Nikita-Filonov/ui-coverage-tool-js/actions/workflows/workflow-test.yml/badge.svg)](https://github.com/Nikita-Filonov/ui-coverage-tool-js/actions/workflows/workflow-test.yml)
+[![codecov](https://codecov.io/gh/Nikita-Filonov/ui-coverage-tool-js/branch/main/graph/badge.svg)](https://codecov.io/gh/Nikita-Filonov/ui-coverage-tool-js)
+[![npm](https://img.shields.io/npm/v/ui-coverage-tool-js)](https://www.npmjs.com/package/ui-coverage-tool-js)
+[![License](https://img.shields.io/github/license/Nikita-Filonov/ui-coverage-tool-js)](LICENSE)
+
 **UI Coverage Tool** is an innovative, no-overhead solution for tracking and visualizing UI test coverage — directly on
 your actual application, not static snapshots. The tool collects coverage during UI test execution and generates an
 interactive HTML report. This report embeds a live iframe of your application and overlays coverage data on top, letting
@@ -32,16 +37,17 @@ you see exactly what was tested and how.
 - [Installation](#installation)
 - [Embedding the Agent Script](#embedding-the-agent-script)
 - [Usage](#usage)
-    - [Playwright](#playwright)
-    - [Selenium](#selenium)
-    - [Puppeteer](#puppeteer)
-    - [Coverage Report Generation](#coverage-report-generation)
+  - [Playwright](#playwright)
+  - [Selenium](#selenium)
+  - [Puppeteer](#puppeteer)
+  - [Coverage Report Generation](#coverage-report-generation)
 - [Configuration](#configuration)
-    - [.env](#configuration-via-env)
-    - [YAML](#configuration-via-yaml)
-    - [JSON](#configuration-via-json)
-    - [Reference](#configuration-reference)
+  - [.env](#configuration-via-env)
+  - [YAML](#configuration-via-yaml)
+  - [JSON](#configuration-via-json)
+  - [Reference](#configuration-reference)
 - [Command-Line Interface (CLI)](#command-line-interface-cli)
+- [Development](#development)
 
 ## Links
 
@@ -58,36 +64,30 @@ If you have any questions or need assistance, feel free to ask [@Nikita Filonov]
 
 ### Summary
 
-![Summary](./docs/screenshots/summary.png "Summary")
+![Summary](./docs/screenshots/summary.png 'Summary')
 
 ### History
 
-![History](./docs/screenshots/history.png "History")
+![History](./docs/screenshots/history.png 'History')
 
 ### Frame
 
-![Frame](./docs/screenshots/frame.png "Frame")
+![Frame](./docs/screenshots/frame.png 'Frame')
 
 ### Element Details
 
-![Element Details](./docs/screenshots/element_details.png "Element Details")
+![Element Details](./docs/screenshots/element_details.png 'Element Details')
 
 ### Elements Table
 
-![Elements Table](./docs/screenshots/elements_table.png "Elements Table")
+![Elements Table](./docs/screenshots/elements_table.png 'Elements Table')
 
 ## Installation
 
-### With npm
+Requires Node.js 22.18+ or 24.11+.
 
 ```shell
 npm install ui-coverage-tool-js
-```
-
-### With yarn
-
-```shell
-yarn add ui-coverage-tool-js
 ```
 
 ## Embedding the Agent Script
@@ -98,7 +98,6 @@ application.
 Add this to your HTML:
 
 ```html
-
 <script src="https://nikita-filonov.github.io/ui-coverage-report/agent.global.js"></script>
 ```
 
@@ -137,7 +136,7 @@ const tracker = new UICoverageTracker({ app: 'my-ui-app' });
   await tracker.trackCoverage({
     selector: '#username-input',
     selectorType: SelectorType.CSS,
-    actionType: ActionType.FILL
+    actionType: ActionType.Fill
   });
 
   const loginButton = page.locator('//button[@id="login-button"]');
@@ -146,13 +145,12 @@ const tracker = new UICoverageTracker({ app: 'my-ui-app' });
   // Track the click action with the tracker
   await tracker.trackCoverage({
     selector: '//button[@id="login-button"]',
-    selectorType: SelectorType.XPATH,
-    actionType: ActionType.CLICK
+    selectorType: SelectorType.XPath,
+    actionType: ActionType.Click
   });
 
   await browser.close();
 })();
-
 ```
 
 Quick summary:
@@ -179,7 +177,7 @@ const tracker = new UICoverageTracker({ app: 'my-ui-app' });
   await tracker.trackCoverage({
     selector: '#username-input',
     selectorType: SelectorType.CSS,
-    actionType: ActionType.FILL
+    actionType: ActionType.Fill
   });
 
   const loginButton = await page.$x('//button[@id="login-button"]');
@@ -187,8 +185,8 @@ const tracker = new UICoverageTracker({ app: 'my-ui-app' });
     await loginButton[0].click();
     await tracker.trackCoverage({
       selector: '//button[@id="login-button"]',
-      selectorType: SelectorType.XPATH,
-      actionType: ActionType.CLICK
+      selectorType: SelectorType.XPath,
+      actionType: ActionType.Click
     });
   }
 
@@ -215,7 +213,7 @@ const tracker = new UICoverageTracker({ app: 'my-ui-app' });
 
     await tracker.trackCoverage({
       selector: '#username-input',
-      actionType: ActionType.FILL,
+      actionType: ActionType.Fill,
       selectorType: SelectorType.CSS
     });
 
@@ -224,15 +222,13 @@ const tracker = new UICoverageTracker({ app: 'my-ui-app' });
 
     await tracker.trackCoverage({
       selector: '//button[@id="login-button"]',
-      actionType: ActionType.CLICK,
-      selectorType: SelectorType.XPATH
+      actionType: ActionType.Click,
+      selectorType: SelectorType.XPath
     });
-
   } finally {
     await driver.quit();
   }
 })();
-
 ```
 
 ### Coverage Report Generation
@@ -258,13 +254,13 @@ npx ui-coverage-tool save-report
 This will generate:
 
 - `index.html` — a standalone HTML report that you can:
-    - Open directly in your browser
-    - Share with your team
-    - Publish to GitHub Pages / GitLab Pages
+  - Open directly in your browser
+  - Share with your team
+  - Publish to GitHub Pages / GitLab Pages
 - `coverage-report.json` — a structured JSON report that can be used for:
-    - Printing a coverage summary in CI/CD logs
-    - Sending metrics to external systems
-    - Custom integrations or dashboards
+  - Printing a coverage summary in CI/CD logs
+  - Sending metrics to external systems
+  - Custom integrations or dashboards
 
 **Important!** The `npx ui-coverage-tool save-report` command must be run from the **root of your project**, where your
 config files (`.env`, `ui-coverage.config.yaml`, etc.) are located. Running it from another directory may result in
@@ -286,13 +282,12 @@ via [getSettings()](./src/config/core.ts).
 
 ### Configuration via `.env`
 
-All settings can be declared using environment variables. Nested fields use dot notation, and all variables must be
-prefixed with `UI_COVERAGE_`.
+All environment variables must be prefixed with `UI_COVERAGE_`. Applications are configured as a JSON array.
 
 **Example:** [.env](docs/configs/.env.example)
 
 ```dotenv
-# Define the applications that should be tracked. In the case of multiple apps, they can be added in a comma-separated list.
+# Define the applications that should be tracked as a JSON array.
 UI_COVERAGE_APPS='[
     {
         "key": "my-ui-app",
@@ -323,17 +318,17 @@ UI_COVERAGE_JSON_REPORT_FILE="./coverage-report.json"
 
 ```yaml
 apps:
-  - key: "my-ui-app"
-    url: "https://my-ui-app.com/login",
-    name: "My UI App"
-    tags: [ "UI", "PRODUCTION" ]
-    repository: "https://github.com/my-ui-app"
+  - key: 'my-ui-app'
+    url: 'https://my-ui-app.com/login'
+    name: 'My UI App'
+    tags: ['UI', 'PRODUCTION']
+    repository: 'https://github.com/my-ui-app'
 
-resultsDir: "./coverage-results"
-historyFile: "./coverage-history.json"
+resultsDir: './coverage-results'
+historyFile: './coverage-history.json'
 historyRetentionLimit: 30
-htmlReportFile: "./index.html"
-jsonReportFile: "./coverage-report.json"
+htmlReportFile: './index.html'
+jsonReportFile: './coverage-report.json'
 ```
 
 ### Configuration via JSON
@@ -347,10 +342,7 @@ jsonReportFile: "./coverage-report.json"
       "key": "my-ui-app",
       "url": "https://my-ui-app.com/login",
       "name": "My UI App",
-      "tags": [
-        "UI",
-        "PRODUCTION"
-      ],
+      "tags": ["UI", "PRODUCTION"],
       "repository": "https://github.com/my-ui-app"
     }
   ],
@@ -365,18 +357,18 @@ jsonReportFile: "./coverage-report.json"
 ### Configuration Reference
 
 | Key                     | Description                                                               | Required | Default                   |
-|-------------------------|---------------------------------------------------------------------------|----------|---------------------------|
-| `apps`                  | List of applications to track. Each must define `key`, `name`, and `url`. | ✅        | —                         |
-| `services[].key`        | Unique internal identifier for the service.                               | ✅        | —                         |
-| `services[].url`        | Entry point URL of the app.                                               | ✅        | —                         |
-| `services[].name`       | Human-friendly name for the service (used in reports).                    | ✅        | —                         |
-| `services[].tags`       | Optional tags used in reports for filtering or grouping.                  | ❌        | —                         |
-| `services[].repository` | Optional repository URL (will be shown in report).                        | ❌        | —                         |
-| `resultsDir`            | Directory to store raw coverage result files.                             | ❌        | `./coverage-results`      |
-| `historyFile`           | File to store historical coverage data.                                   | ❌        | `./coverage-history.json` |
-| `historyRetentionlimit` | Maximum number of historical entries to keep.                             | ❌        | `30`                      |
-| `htmlReportFile`        | Path to save the final HTML report (if enabled).                          | ❌        | `./index.html`            |
-| `jsonReportFile`        | Path to save the raw JSON report (if enabled).                            | ❌        | `./coverage-report.json`  |
+| ----------------------- | ------------------------------------------------------------------------- | -------- | ------------------------- |
+| `apps`                  | List of applications to track. Each must define `key`, `name`, and `url`. | ✅       | —                         |
+| `apps[].key`            | Unique internal identifier for the service.                               | ✅       | —                         |
+| `apps[].url`            | Entry point URL of the app.                                               | ✅       | —                         |
+| `apps[].name`           | Human-friendly name for the service (used in reports).                    | ✅       | —                         |
+| `apps[].tags`           | Optional tags used in reports for filtering or grouping.                  | ❌       | —                         |
+| `apps[].repository`     | Optional repository URL (will be shown in report).                        | ❌       | —                         |
+| `resultsDir`            | Directory to store raw coverage result files.                             | ❌       | `./coverage-results`      |
+| `historyFile`           | File to store historical coverage data.                                   | ❌       | `./coverage-history.json` |
+| `historyRetentionLimit` | Maximum number of historical entries to keep.                             | ❌       | `30`                      |
+| `htmlReportFile`        | Path to save the final HTML report (if enabled).                          | ❌       | `./index.html`            |
+| `jsonReportFile`        | Path to save the raw JSON report (if enabled).                            | ❌       | `./coverage-report.json`  |
 
 ### How It Works
 
@@ -423,6 +415,18 @@ npx ui-coverage-tool print-config
 - It helps verify that the correct settings are being applied and is particularly useful if something is not working as
   expected.
 
+### Command: `clear-results`
+
+Removes collected `.json` files from the configured `resultsDir`. History, the configured JSON report, other files and
+nested directories are preserved. A missing results directory is left untouched.
+
+```shell
+npx ui-coverage-tool clear-results
+```
+
+Run this command before a new test run when you need an independent report. Results are not cleared automatically:
+`save-report` aggregates all collected result files.
+
 ## Troubleshooting
 
 ### The report is empty or missing data
@@ -431,3 +435,17 @@ npx ui-coverage-tool print-config
 - Make sure you run `npx ui-coverage-tool save-report` from the root directory.
 - Make sure to setup configuration correctly.
 - Check that the `coverage-results` directory contains `.json` files.
+
+## Development
+
+```shell
+npm ci
+npm run lint
+npm run typecheck
+npm run test:coverage
+npm run build
+npm run test:package
+```
+
+The build includes the standalone HTML report template in the npm package. To update it from the report submodule,
+run `npm run report:copy` before building.

@@ -5,32 +5,32 @@ import { SelectorType } from '../tools/selector';
 import { Settings } from '../config/models';
 
 type UICoverageHistoryBuilderProps = {
-  history: AppHistoryState
-  settings: Settings
-}
+  history: AppHistoryState;
+  settings: Settings;
+};
 
 type GetElementHistoryProps = {
-  actions: ActionHistory[],
-  selector: Selector,
-  selectorType: SelectorType
-}
+  actions: ActionHistory[];
+  selector: Selector;
+  selectorType: SelectorType;
+};
 
 type BuildAppHistoryProps = {
-  actions: ActionHistory[],
-  totalActions: number,
-  totalElements: number
-}
+  actions: ActionHistory[];
+  totalActions: number;
+  totalElements: number;
+};
 
 type BuildElementHistoryProps = {
-  actions: ActionHistory[]
-}
+  actions: ActionHistory[];
+};
 
-type BaseHistory = { actions: ActionHistory[]; createdAt: Date }
+type BaseHistory = { actions: ActionHistory[]; createdAt: Date };
 
 type AppendHistoryProps<T extends BaseHistory> = {
-  history: T[],
-  buildFunc: () => T
-}
+  history: T[];
+  buildFunc: () => T;
+};
 
 export class UICoverageHistoryBuilder {
   private history: AppHistoryState;
@@ -61,9 +61,7 @@ export class UICoverageHistoryBuilder {
       return history;
     }
 
-    const combined = [...history, newItem].sort(
-      (a, b) => a.createdAt.getTime() - b.createdAt.getTime()
-    );
+    const combined = [...history, newItem].sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
 
     return combined.slice(-this.settings.historyRetentionLimit);
   }

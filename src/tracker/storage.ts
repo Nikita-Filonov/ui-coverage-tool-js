@@ -1,8 +1,8 @@
 import fs from 'fs/promises';
 import path from 'path';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'node:crypto';
 import { getLogger } from '../tools/logger';
-import { CoverageResult, CoverageResultList } from './models';
+import { CoverageResult, CoverageResultList, isCoverageResult } from './models';
 import { Settings } from '../config/models';
 import { isPathExists } from '../tools/files';
 
@@ -33,7 +33,9 @@ export class UICoverageTrackerStorage {
       if (fileStats.isFile() && fileName.endsWith('.json')) {
         try {
           const json = await fs.readFile(file, 'utf-8');
-          results.push(JSON.parse(json));
+          const coverage: unknown = JSON.parse(json);
+          if (!isCoverageResult(coverage)) throw new Error('Invalid coverage result');
+          results.push(coverage);
         } catch (error) {
           logger.warning(`Failed to parse file ${fileName}: ${error}`);
         }
@@ -44,6 +46,43 @@ export class UICoverageTrackerStorage {
     return new CoverageResultList({ results });
   }
 
+  async clear(): Promise<void> {
+    const resultsDir = this.settings.resultsDir;
+    let directoryStats;
+    try {
+      directoryStats = await fs.stat(resultsDir);
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+        logger.info(`Results directory does not exist: ${resultsDir}`);
+        return;
+      }
+      throw error;
+    }
+
+    if (!directoryStats.isDirectory()) {
+      throw new Error(`Results path is not a directory: ${resultsDir}`);
+    }
+
+    const protectedFiles = new Set<string>();
+    for (const file of [this.settings.historyFile, this.settings.jsonReportFile]) {
+      if (file && (await isPathExists(file))) protectedFiles.add(await fs.realpath(file));
+    }
+
+    let removed = 0;
+    for (const fileName of await fs.readdir(resultsDir)) {
+      if (!fileName.endsWith('.json')) continue;
+      const file = path.join(resultsDir, fileName);
+      if (!(await fs.stat(file)).isFile() || protectedFiles.has(await fs.realpath(file))) continue;
+      try {
+        await fs.unlink(file);
+        removed += 1;
+      } catch (error) {
+        throw new Error(`Failed to remove coverage result ${file}: ${error}`, { cause: error });
+      }
+    }
+    logger.info(`Removed ${removed} coverage files from directory: ${resultsDir}`);
+  }
+
   async save(coverage: CoverageResult) {
     const resultsDir = this.settings.resultsDir;
 
@@ -52,7 +91,7 @@ export class UICoverageTrackerStorage {
       await fs.mkdir(resultsDir, { recursive: true });
     }
 
-    const file = path.join(resultsDir, `${uuidv4()}.json`);
+    const file = path.join(resultsDir, `${randomUUID()}.json`);
 
     try {
       await fs.writeFile(file, JSON.stringify(coverage), 'utf-8');

@@ -26,4 +26,3 @@ export interface AppHistoryState {
 export interface CoverageHistoryState {
   apps: Record<AppKey, AppHistoryState>;
 }
-
